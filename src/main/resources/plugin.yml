@@ -1,0 +1,7 @@
+name: PaperChaseMC
+version: 1.0
+author: Kappa
+
+api-version: 1.17
+
+main: de.kappa.paperchase.Main
