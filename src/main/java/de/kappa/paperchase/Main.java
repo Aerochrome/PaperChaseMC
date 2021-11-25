@@ -1,13 +1,15 @@
 package de.kappa.paperchase;
 
-import org.bukkit.Bukkit;
+import de.kappa.paperchase.eventlisteners.PickupListener;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class Main extends JavaPlugin
-{
-
+public class Main extends JavaPlugin {
     @Override
     public void onEnable() {
-        Bukkit.getLogger().info("Starting");
+        this.getLogger().info("Starting up");
+
+        // Register EventListeners
+        getServer().getPluginManager().registerEvents(new PickupListener(), this);
+
     }
 }
