@@ -1,0 +1,2 @@
+# mysql or sqlite
+database_driver: sqlite
