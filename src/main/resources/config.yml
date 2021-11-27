@@ -1,2 +1,8 @@
 # mysql or sqlite
 database_driver: sqlite
+
+db_host: localhost
+db_port: 3306
+db_user: paperchase
+db_password: paperchase
+db_database: paperchase
