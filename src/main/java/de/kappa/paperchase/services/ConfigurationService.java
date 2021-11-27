@@ -6,18 +6,13 @@ import org.bukkit.plugin.Plugin;
 
 public class ConfigurationService {
 
-    private final Plugin plugin;
     public static FileConfiguration config;
 
-    public ConfigurationService() {
-        this.plugin = Main.getInstance();
-    }
-
     public void updateConfig() {
-        this.plugin.saveDefaultConfig();
+        Main.instance.saveDefaultConfig();
     }
 
     public void loadConfig() {
-        ConfigurationService.config = this.plugin.getConfig();
+        ConfigurationService.config = Main.instance.getConfig();
     }
 }
