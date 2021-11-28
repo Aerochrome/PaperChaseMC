@@ -35,13 +35,15 @@ public class ItemLibrary {
     }
 
     public static ItemStack createPaperChaseItem() {
-        ItemStack stack = new ItemStack(Material.COOKIE);
+        return new ItemStack(Material.COOKIE);
+    }
+
+    public static ItemStack setPaperChaseId(ItemStack stack, Integer id) {
         ItemMeta meta = stack.getItemMeta();
 
         List<String> lore = new ArrayList<>();
         lore.add(0, "paperchase_id");
-        // TODO give actual id
-        lore.add(1, "1");
+        lore.add(1, id.toString());
 
         meta.setLore(lore);
         stack.setItemMeta(meta);
