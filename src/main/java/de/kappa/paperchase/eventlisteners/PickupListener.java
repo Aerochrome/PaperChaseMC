@@ -25,21 +25,16 @@ public class PickupListener implements Listener {
         Material material = stack.getType();
 
         if (material == Material.COOKIE) {
-
-            // Cooldown check
             String itemUUIDString = event.getItem().getUniqueId().toString();
 
-            Long cooldownUntil = this.pickupCooldownMap.get(itemUUIDString);
-            if (cooldownUntil != null) {
-                if (System.currentTimeMillis()/1000L <= cooldownUntil) {
-                    event.setCancelled(true);
-                    return;
-                }
+            if (isInCooldown(itemUUIDString)) {
+                event.setCancelled(true);
+                return;
             }
 
             Player p = (Player) event.getEntity();
-
             Integer paperChaseId;
+
             if ((paperChaseId = ItemLibrary.getPaperChaseId(stack)) != null) {
                 p.sendMessage(ChatColor.RED + "[PaperMC] Found cookie #" + paperChaseId.toString());
 
@@ -47,5 +42,14 @@ public class PickupListener implements Listener {
                 event.setCancelled(true);
             }
         }
+    }
+
+    private boolean isInCooldown(String itemUUIDString) {
+        Long cooldownUntil = this.pickupCooldownMap.get(itemUUIDString);
+        if (cooldownUntil != null) {
+            return System.currentTimeMillis() / 1000L <= cooldownUntil;
+        }
+
+        return false;
     }
 }
