@@ -1,6 +1,7 @@
 package de.kappa.paperchase.eventlisteners;
 
 import de.kappa.paperchase.libraries.ItemLibrary;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -15,10 +16,12 @@ public class PickupListener implements Listener {
         Material material = event.getItem().getItemStack().getType();
 
         if (material == Material.COOKIE) {
-            if (ItemLibrary.hasPaperChaseId(event.getItem().getItemStack())) {
+
+            Integer paperChaseId;
+            if ((paperChaseId = ItemLibrary.getPaperChaseId(event.getItem().getItemStack())) != null) {
                 if (event.getEntityType() == EntityType.PLAYER) {
                     Player p = (Player) event.getEntity();
-                    p.sendMessage("[PaperMC] Its a bird? Its a plane? Its a cookie!");
+                    p.sendMessage(ChatColor.RED + "[PaperMC] Found cookie #" + paperChaseId.toString());
                 }
 
                 event.setCancelled(true);
