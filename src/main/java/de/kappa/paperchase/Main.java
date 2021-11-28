@@ -1,5 +1,7 @@
 package de.kappa.paperchase;
 
+import de.kappa.paperchase.commands.ItemSpawnCommand;
+import de.kappa.paperchase.eventlisteners.DespawnListener;
 import de.kappa.paperchase.eventlisteners.PickupListener;
 import de.kappa.paperchase.services.ConfigurationService;
 import org.bukkit.plugin.Plugin;
@@ -19,6 +21,7 @@ public class Main extends JavaPlugin {
 
         // Register EventListeners
         getServer().getPluginManager().registerEvents(new PickupListener(), this);
+        getServer().getPluginManager().registerEvents(new DespawnListener(), this);
 
     }
 
