@@ -26,8 +26,9 @@ public class PickupListener implements Listener {
 
         if (material == Material.COOKIE) {
             String itemUUIDString = event.getItem().getUniqueId().toString();
+            String cooldownIdentifier = itemUUIDString + event.getEntity().getUniqueId().toString();
 
-            if (isInCooldown(itemUUIDString)) {
+            if (isInCooldown(cooldownIdentifier)) {
                 event.setCancelled(true);
                 return;
             }
@@ -38,14 +39,14 @@ public class PickupListener implements Listener {
             if ((paperChaseId = ItemLibrary.getPaperChaseId(stack)) != null) {
                 p.sendMessage(ChatColor.RED + "[PaperMC] Found cookie #" + paperChaseId.toString());
 
-                this.pickupCooldownMap.put(itemUUIDString, System.currentTimeMillis()/1000L+2);
+                this.pickupCooldownMap.put(cooldownIdentifier, System.currentTimeMillis()/1000L+2);
                 event.setCancelled(true);
             }
         }
     }
 
-    private boolean isInCooldown(String itemUUIDString) {
-        Long cooldownUntil = this.pickupCooldownMap.get(itemUUIDString);
+    private boolean isInCooldown(String cooldownIdentifier) {
+        Long cooldownUntil = this.pickupCooldownMap.get(cooldownIdentifier);
         if (cooldownUntil != null) {
             return System.currentTimeMillis() / 1000L <= cooldownUntil;
         }
