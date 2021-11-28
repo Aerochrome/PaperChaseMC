@@ -5,3 +5,8 @@ author: Kappa
 api-version: 1.17
 
 main: de.kappa.paperchase.Main
+
+commands:
+  pcspawn:
+    description: Spawns a paperchase item
+    usage: /pcspawn
