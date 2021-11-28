@@ -19,6 +19,9 @@ public class Main extends JavaPlugin {
 
         this.handleConfiguration();
 
+        // Register Commands
+        getCommand("pcspawn").setExecutor(new ItemSpawnCommand());
+
         // Register EventListeners
         getServer().getPluginManager().registerEvents(new PickupListener(), this);
         getServer().getPluginManager().registerEvents(new DespawnListener(), this);
