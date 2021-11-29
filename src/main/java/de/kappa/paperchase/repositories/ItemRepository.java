@@ -43,7 +43,7 @@ public class ItemRepository {
         int affectedRows = stmt.executeUpdate();
 
         if (affectedRows == 0) {
-            throw new SQLException("Creating user failed, no rows affected.");
+            throw new SQLException("Creating item failed, no rows affected.");
         }
 
         try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
@@ -51,7 +51,7 @@ public class ItemRepository {
                 return generatedKeys.getInt(1);
             }
             else {
-                throw new SQLException("Creating user failed, no ID obtained.");
+                throw new SQLException("Creating item failed, no ID obtained.");
             }
         }
     }
