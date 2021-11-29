@@ -10,6 +10,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 import java.util.HashMap;
+import java.util.List;
 
 public class PickupListener implements Listener {
     public HashMap<String, Long> pickupCooldownMap = new HashMap<String, Long>();
@@ -23,6 +24,7 @@ public class PickupListener implements Listener {
 
         ItemStack stack = event.getItem().getItemStack();
         Material material = stack.getType();
+        List<String> itemLore = stack.getItemMeta().getLore();
 
         if (material == Material.COOKIE) {
             String itemUUIDString = event.getItem().getUniqueId().toString();
@@ -36,10 +38,12 @@ public class PickupListener implements Listener {
             Player p = (Player) event.getEntity();
             Integer paperChaseId;
 
-            if ((paperChaseId = ItemLibrary.getPaperChaseId(stack)) != null) {
-                p.sendMessage(ChatColor.RED + "[PaperMC] Found cookie #" + paperChaseId.toString());
+            if (itemLore != null && ItemLibrary.isPaperChaseItem(itemLore)) {
+                if ((paperChaseId = ItemLibrary.getPaperChaseId(stack)) != null) {
+                    p.sendMessage(ChatColor.RED + "[PaperMC] Found cookie #" + paperChaseId.toString());
 
-                this.pickupCooldownMap.put(cooldownIdentifier, System.currentTimeMillis()/1000L+2);
+                    this.pickupCooldownMap.put(cooldownIdentifier, System.currentTimeMillis()/1000L+2);
+                }
                 event.setCancelled(true);
             }
         }
