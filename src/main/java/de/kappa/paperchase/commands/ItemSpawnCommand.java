@@ -1,7 +1,10 @@
 package de.kappa.paperchase.commands;
 
+import de.kappa.paperchase.Main;
 import de.kappa.paperchase.libraries.ItemLibrary;
 import de.kappa.paperchase.repositories.ItemRepository;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -20,27 +23,41 @@ public class ItemSpawnCommand implements CommandExecutor {
             return true;
         }
 
-        Player p = (Player) commandSender;
+        final Player p = (Player) commandSender;
         ItemStack dropStack = ItemLibrary.createPaperChaseItem();
 
-        Item droppedItem = p.getWorld().dropItem(p.getLocation(), dropStack);
+        final Item droppedItem = p.getWorld().dropItem(p.getLocation(), dropStack);
 
-        Integer insertId = null;
-        try {
-            insertId = ItemRepository.insertItemStack(
-                    droppedItem.getUniqueId(),
-                    droppedItem.getWorld().getUID(),
-                    droppedItem.getLocation().getX(),
-                    droppedItem.getLocation().getY(),
-                    droppedItem.getLocation().getZ()
-            );
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
+        Bukkit.getScheduler().runTaskAsynchronously(Main.instance, new Runnable() {
+            @Override
+            public void run() {
+                Integer insertId = null;
+                try {
+                    insertId = ItemRepository.insertItemStack(
+                            droppedItem.getUniqueId(),
+                            droppedItem.getWorld().getUID(),
+                            droppedItem.getLocation().getX(),
+                            droppedItem.getLocation().getY(),
+                            droppedItem.getLocation().getZ()
+                    );
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    return;
+                }
 
-        droppedItem.setItemStack(ItemLibrary.setPaperChaseId(droppedItem.getItemStack(), insertId));
-        p.sendMessage("Spawned item");
+                final Integer fInsertId = insertId;
+
+                Bukkit.getScheduler().runTask(Main.instance, new Runnable() {
+                    @Override
+                    public void run() {
+                        droppedItem.setItemStack(ItemLibrary.setPaperChaseId(droppedItem.getItemStack(), fInsertId));
+                        p.sendMessage(ChatColor.GREEN + "Spawned paperchase item #" + fInsertId.toString());
+                    }
+                });
+
+            }
+        });
+
         return true;
     }
 }
