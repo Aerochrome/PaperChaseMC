@@ -55,4 +55,47 @@ public class ItemRepository {
             }
         }
     }
+
+    public static Integer insertItemFound (
+            UUID playeruuid,
+            Integer paperchaseItemId
+    ) throws SQLException {
+        String insertQuery = "INSERT INTO paperchase_found (player_uuid, paperchase_item_id, created) "
+                + "VALUES (?,?,?)";
+
+        PreparedStatement stmt = DatabaseService.getConnection().prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS);
+        stmt.setString(1, playeruuid.toString());
+        stmt.setInt(2, paperchaseItemId);
+        stmt.setLong(3, System.currentTimeMillis()/1000L);
+
+        int affectedRows = stmt.executeUpdate();
+
+        if (affectedRows == 0) {
+            throw new SQLException("Creating item_found failed, no rows affected.");
+        }
+
+        try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+            if (generatedKeys.next()) {
+                return generatedKeys.getInt(1);
+            }
+            else {
+                throw new SQLException("Creating item_found failed, no ID obtained.");
+            }
+        }
+    }
+
+    public static boolean doesItemFoundExist(
+            UUID playeruuid,
+            Integer paperchaseItemId
+    ) throws SQLException {
+        String query = "SELECT ID FROM paperchase_found WHERE player_uuid = ? AND paperchase_item_id = ?";
+
+        PreparedStatement stmt = DatabaseService.getConnection().prepareStatement(query);
+        stmt.setString(1, playeruuid.toString());
+        stmt.setInt(2, paperchaseItemId);
+
+        ResultSet result = stmt.executeQuery();
+
+        return result.next();
+    }
 }

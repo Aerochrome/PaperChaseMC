@@ -1,6 +1,9 @@
 package de.kappa.paperchase.eventlisteners;
 
+import de.kappa.paperchase.Main;
 import de.kappa.paperchase.libraries.ItemLibrary;
+import de.kappa.paperchase.repositories.ItemRepository;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
@@ -9,6 +12,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
+
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -35,12 +40,46 @@ public class PickupListener implements Listener {
                 return;
             }
 
-            Player p = (Player) event.getEntity();
-            Integer paperChaseId;
+            final Player p = (Player) event.getEntity();
+            final Integer paperChaseId;
 
             if (itemLore != null && ItemLibrary.isPaperChaseItem(itemLore)) {
                 if ((paperChaseId = ItemLibrary.getPaperChaseId(stack)) != null) {
-                    p.sendMessage(ChatColor.RED + "[PaperMC] Found cookie #" + paperChaseId.toString());
+
+                    Bukkit.getScheduler().runTaskAsynchronously(Main.instance, new Runnable() {
+                        @Override
+                        public void run() {
+                            boolean itemFoundExist = true;
+                            try {
+                                itemFoundExist = ItemRepository.doesItemFoundExist(p.getUniqueId(), paperChaseId);
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                                return;
+                            }
+
+                            String playerMessage;
+
+                            if (!itemFoundExist) {
+                                try {
+                                    ItemLibrary.saveItemFoundByItemId(paperChaseId, p);
+                                    playerMessage = ChatColor.GREEN + "[PaperChase] Found item, congratulations!";
+                                } catch (SQLException e) {
+                                    e.printStackTrace();
+                                    playerMessage = ChatColor.RED + "[PaperChase] Ooops. We could not save the item you just found.";
+                                }
+                            } else {
+                                playerMessage = ChatColor.RED + "[PaperChase] You already found that item ...";
+                            }
+
+                            final String fplayerMessage = playerMessage;
+                            Bukkit.getScheduler().runTask(Main.instance, new Runnable() {
+                                @Override
+                                public void run() {
+                                    p.sendMessage(fplayerMessage);
+                                }
+                            });
+                        }
+                    });
 
                     this.pickupCooldownMap.put(cooldownIdentifier, System.currentTimeMillis()/1000L+2);
                 }

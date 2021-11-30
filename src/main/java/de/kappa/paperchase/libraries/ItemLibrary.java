@@ -1,9 +1,12 @@
 package de.kappa.paperchase.libraries;
 
+import de.kappa.paperchase.repositories.ItemRepository;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -75,5 +78,9 @@ public class ItemLibrary {
         stack.setItemMeta(meta);
 
         return stack;
+    }
+
+    public static Integer saveItemFoundByItemId(Integer paperchaseId, Player player) throws SQLException {
+        return ItemRepository.insertItemFound(player.getUniqueId(), paperchaseId);
     }
 }
