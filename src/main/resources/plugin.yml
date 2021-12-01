@@ -10,3 +10,6 @@ commands:
   pcspawn:
     description: Spawns a paperchase item
     usage: /pcspawn
+  pcremove:
+    description: Removes a paperchase item
+    usage: /pcremove <optional mode>
