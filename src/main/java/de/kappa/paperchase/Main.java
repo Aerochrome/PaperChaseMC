@@ -1,5 +1,6 @@
 package de.kappa.paperchase;
 
+import de.kappa.paperchase.commands.ItemRemoveCommand;
 import de.kappa.paperchase.commands.ItemSpawnCommand;
 import de.kappa.paperchase.eventlisteners.DespawnListener;
 import de.kappa.paperchase.eventlisteners.PickupListener;
@@ -21,6 +22,7 @@ public class Main extends JavaPlugin {
 
         // Register Commands
         getCommand("pcspawn").setExecutor(new ItemSpawnCommand());
+        getCommand("pcremove").setExecutor(new ItemRemoveCommand());
 
         // Register EventListeners
         getServer().getPluginManager().registerEvents(new PickupListener(), this);

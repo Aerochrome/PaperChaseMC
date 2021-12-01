@@ -98,4 +98,26 @@ public class ItemRepository {
 
         return result.next();
     }
+
+    public static Integer deleteItemFoundByItemId(
+            Integer paperChaseId
+    ) throws SQLException {
+        String query = "DELETE FROM paperchase_found WHERE paperchase_item_id = ?";
+
+        PreparedStatement stmt = DatabaseService.getConnection().prepareStatement(query);
+        stmt.setInt(1, paperChaseId);
+
+        return stmt.executeUpdate();
+    }
+
+    public static boolean deleteItemById(
+            Integer paperChaseId
+    ) throws SQLException {
+        String query = "DELETE FROM paperchase_items WHERE ID = ?";
+
+        PreparedStatement stmt = DatabaseService.getConnection().prepareStatement(query);
+        stmt.setInt(1, paperChaseId);
+
+        return stmt.executeUpdate() > 0;
+    }
 }
